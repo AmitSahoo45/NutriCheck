@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import Tesseract from 'tesseract.js';
 
@@ -8,8 +8,14 @@ const CheckIndexPage: React.FC = () => {
     const [isWebcamOpen, setIsWebcamOpen] = useState(false);
     const [imageSource, setImageSource] = useState<string | null>(null);
     const [extractedText, setExtractedText] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     const webcamRef = React.useRef<Webcam>(null);
+
+    useEffect(() => {
+        const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+        setIsMobile(isMobileDevice);
+    }, []);
 
     const toggleWebcam = () => {
         setIsWebcamOpen((prevState) => !prevState);
@@ -37,7 +43,7 @@ const CheckIndexPage: React.FC = () => {
                     videoConstraints={{
                         width: 640,
                         height: 480,
-                        facingMode: 'user',
+                        facingMode: isMobile ? { exact: 'environment' } : 'user',
                     }}
                 />
             )}
